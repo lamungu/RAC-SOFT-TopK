@@ -1,0 +1,22 @@
+# Phase 1 of "Our Approach" (paper 5.2.3): independent classifier pre-training.
+# Paper: classifier on independent pair dataset, batch size 2 (fixed),
+# lr 1e-5 (fixed), 5 epochs (early stopping). BERT-B backbone.
+# NOTE: trainer saves the FINAL weights (no best-model checkpoint) and with
+# patience=5 >= epochs=5 early stopping can never trigger -> exactly 5 epochs.
+model_name: bert-base-uncased
+language: en
+task: classification
+train_file: ./data/preprocessed/English_train.json
+eval_file: ./data/preprocessed/English_dev.json
+max_seq_length: 128
+margin: 0.5
+batch_size: 2
+lr: 0.00001
+max_grad_norm: 1.0
+device: cuda
+distributed: false
+patience: 5
+log_dir: ./logs/en/approach/phase1_classifier/
+epochs: 5
+num_labels: 3
+seed: 42

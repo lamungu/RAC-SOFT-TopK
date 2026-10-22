@@ -1,0 +1,38 @@
+# Phase 3 of "Our Approach" (paper 5.2.3): fine-tune the classifier with the
+# retriever FROZEN to boost classifier performance.
+# Paper: batch size 1 (fixed), lr 1e-5 (fixed), 5 epochs.
+# Same data (joint document sets) and soft-top-k settings as Phase 2.
+# This mirrors the shipped configs/joint_scratch/joint_config.yaml
+# ("joint_second", freeze_retriever: True), but with the Phase-2 checkpoints.
+model_name: colbert_bert_rac
+language: en
+task: joint-training
+train_file: ./data/preprocessed/English_train.json
+eval_file: ./data/preprocessed/English_dev.json
+max_seq_length: 128
+margin: 0.5
+batch_size: 1
+lr: 0.00001
+max_grad_norm: 1.0
+device: cuda
+distributed: false
+patience: 5
+log_dir: ./logs/en/approach/phase3_frozen_retriever/
+epochs: 5
+num_labels: 3
+doc_size: 64
+seed: 42
+model:
+  num_labels: 3
+  bert_model_name_retriever: colbert-ir/colbertv2.0
+  bert_model_name_classifier: bert-base-uncased
+  max_length: 128
+  retriever_path: ./logs/en/approach/phase2_joint/checkpoints/retriever
+  classifier_path: ./logs/en/approach/phase2_joint/checkpoints/classifier
+  retriever_count: 5
+  epsilon: 0.00000008
+  score_fn: maxsim
+  freeze_retriever: True
+  freeze_classifier: False
+  device: cuda
+  soft_k_epsilon: 0.01

@@ -1,0 +1,16 @@
+# Inference on the TEST set for "Our Approach" (paper Table 3 test row:
+# MAP 0.559, R@5 0.634, M-F1 0.482, Strict-M-F1 0.454).
+# inference_driver.py reads data_file as JSONL (one sample per line).
+exp_name: approach_test
+model_name: bert-base-uncased
+retriever_path: ./logs/en/approach/phase3_frozen_retriever/checkpoints/retriever
+classifier_path: ./logs/en/approach/phase3_frozen_retriever/checkpoints/classifier
+output_file_retriever: ./results/en/approach_test.txt
+output_file_classifier: ./results/en/approach_test.json
+data_file: ./data/main/English_test.jsonl
+language: en
+max_length: 128
+top_k: 5
+meta_file: ./meta.json
+num_labels: 3
+score_fn: maxsim

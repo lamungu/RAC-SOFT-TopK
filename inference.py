@@ -107,12 +107,13 @@ class Inference:
                     temp = data_sample["timeline"][idx]
                     temp.append(score)
                     retrieve_tweets_with_scores.append(temp)
-            if data_sample.pop("label", None):
+            label = data_sample.pop("label", None)
+            if label:
                 data_retrieve_tweets_with_scores.append(
                     {
                         "id": data_sample["id"],
                         "claim": data_sample["rumor"],
-                        "label": data_sample["label"],
+                        "label": label,
                         "predicted_evidence": retrieve_tweets_with_scores,
                     }
                 )

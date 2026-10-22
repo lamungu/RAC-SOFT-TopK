@@ -1,0 +1,39 @@
+# uv-compatible environment pinning the paper's exact stack (environment.yml):
+#   Python 3.10.13, torch 2.0.1, transformers 4.39.3
+# Setup on the GPU box:
+#   uv sync          # creates .venv with the pinned versions
+#   source .venv/bin/activate
+#   bash scripts/approach.sh
+#
+# Notes:
+# - torch==2.0.1 from PyPI is the CUDA 11.8 build (the paper's V100 setup);
+#   it runs fine on newer (12.x) drivers too.
+# - models/bert_seq_cls.py is a copy of the transformers-4.39.3 BERT
+#   implementation; keep the pin for an exact reproduction. (The pipeline has
+#   also been smoke-tested with transformers 4.57 / torch 2.12.)
+# - The stdlib retrieval scorer (scorer/retrieval_scorer_stdlib.py) has no
+#   extra dependencies. The original pyterrier-based one additionally needs
+#   `uv sync --extra terrier` plus a JDK.
+[project]
+name = "rac-soft-topk"
+version = "0.1.0"
+description = "DEFAULT at CheckThat! 2024: RAC with differentiable top-k (reproduction)"
+requires-python = ">=3.10,<3.11"
+dependencies = [
+    "torch==2.0.1",
+    "transformers==4.39.3",
+    "numpy==1.26.4",
+    "tensorboard==2.16.2",
+    "loguru==0.7.2",
+    "tqdm==4.66.2",
+    "PyYAML==6.0.1",
+    "emoji==2.10.1",
+    "jsonlines==4.0.0",
+]
+# NOTE: unpinned on purpose - pyterrier 0.10.0 (environment.yml) no longer
+# resolves via uv/PyPI; only needed for the legacy scorer, not for training.
+[project.optional-dependencies]
+terrier = [
+    "pyterrier",
+    "pandas",
+]

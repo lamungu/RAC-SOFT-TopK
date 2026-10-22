@@ -1,0 +1,41 @@
+# Phase 2 of "Our Approach" (paper 5.2.3): joint end-to-end training of
+# Retriever + Classifier on the joint document-set dataset.
+# Paper 5.2.2 hyperparameters: batch size 1 (fixed), lr 1e-5 (fixed),
+# k=5 (given), soft-top-k epsilon 0.01 (fixed), 5 epochs (early stopping).
+# Initialization (Algorithm 1):
+#   - classifier H: Phase-1 independently trained weights
+#   - retriever R:  colbert-ir/colbertv2.0 pretrained checkpoint
+#     (retriever_path: None -> falls back to bert_model_name_retriever;
+#      paper 5.2.3 only pre-trains the classifier independently)
+model_name: colbert_bert_rac
+language: en
+task: joint-training
+train_file: ./data/preprocessed/English_train.json
+eval_file: ./data/preprocessed/English_dev.json
+max_seq_length: 128
+margin: 0.5
+batch_size: 1
+lr: 0.00001
+max_grad_norm: 1.0
+device: cuda
+distributed: false
+patience: 5
+log_dir: ./logs/en/approach/phase2_joint/
+epochs: 5
+num_labels: 3
+doc_size: 64
+seed: 42
+model:
+  num_labels: 3
+  bert_model_name_retriever: colbert-ir/colbertv2.0
+  bert_model_name_classifier: bert-base-uncased
+  max_length: 128
+  retriever_path: None
+  classifier_path: ./logs/en/approach/phase1_classifier/checkpoints
+  retriever_count: 5
+  epsilon: 0.00000008
+  score_fn: maxsim
+  freeze_retriever: False
+  freeze_classifier: False
+  device: cuda
+  soft_k_epsilon: 0.01
